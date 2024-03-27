@@ -1,6 +1,15 @@
+var ListNode = function(key = -1, next = null) {
+    this.key = key;
+    this.next = next;
+}
 
 var MyHashSet = function() {
-    this.value = {};
+    this.size = 1000;
+    this.set = new Array(this.size).fill(null).map(() => new ListNode());
+};
+
+MyHashSet.prototype.hash = function(key) {
+    return key % this.size;
 };
 
 /** 
@@ -8,7 +17,17 @@ var MyHashSet = function() {
  * @return {void}
  */
 MyHashSet.prototype.add = function(key) {
-    this.value[key] = key;
+    let curr = this.set[this.hash(key)];
+
+    while (curr.next) {
+        if (curr.next.key === key) {
+            return;
+        }
+
+        curr = curr.next;
+    }
+
+    curr.next = new ListNode(key);
 };
 
 /** 
@@ -16,7 +35,15 @@ MyHashSet.prototype.add = function(key) {
  * @return {void}
  */
 MyHashSet.prototype.remove = function(key) {
-    delete this.value[key];
+    let curr = this.set[this.hash(key)];
+
+    while(curr && curr.next) {
+        if (curr.next.key === key) {
+            curr.next = curr.next.next;
+        }
+
+        curr = curr.next;
+    }
 };
 
 /** 
@@ -24,7 +51,17 @@ MyHashSet.prototype.remove = function(key) {
  * @return {boolean}
  */
 MyHashSet.prototype.contains = function(key) {
-    return this.value[key] !== undefined;
+    let curr = this.set[this.hash(key)];
+
+    while (curr.next) {
+        if (curr.next.key === key) {
+            return true;
+        }
+
+        curr = curr.next;
+    }
+
+    return false;
 };
 
 /** 
