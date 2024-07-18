@@ -8,6 +8,8 @@
 var validPath = function(n, edges, source, destination) {
     const graph = new Map();
     const seen = new Set();
+    const queue = [source];
+    seen.add(source);
 
     for(let i = 0; i < edges.length; i++) {
         const [A, B] = edges[i];
@@ -17,19 +19,17 @@ var validPath = function(n, edges, source, destination) {
         graph.get(B).push(A);
     }
 
-    function dfs(node) {
+    while(queue.length) {
+        const node = queue.shift();
         if(node === destination) return true;
 
-        if(!seen.has(node)) {
-            seen.add(node);
-
-            for(let nextNode of graph.get(node)) {
-                if(dfs(nextNode)) return true;
-            }
+        for(let neighbor of graph.get(node)) {
+            if(!seen.has(neighbor)) {
+                seen.add(neighbor);
+                queue.push(neighbor);
+            }  
         }
-
-        return false;
     }
 
-    return dfs(source);
+    return false;
 }
